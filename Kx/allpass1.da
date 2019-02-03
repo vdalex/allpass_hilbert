@@ -1,0 +1,44 @@
+; New microcode
+	name "allpass1";
+	copyright "Copyright (c) 2004.";
+	created "06/20/2009";
+	engine "kX";
+	; comment "";
+	guid "19e05847-bdfb-416f-a292-4289eee6e3ab";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+; Registers
+input inl,a2
+output outl ; outr
+static sca=0x1;
+static lx1=0x0, lx2=0x0, ly1=0x0;static registers for the delayed samples
+static ly2=0x0 ; ; we don't need this
+;static ry1=0x0, ry2=0x0; and this, because they are for the right cahnnel
+temp t1, t2
+; Code
+macs 0x0, 0x0, 0x0, 0x0;
+;we null the accumulator (note that the result of that operation is 0) 
+;so previous values won't get mixed with the ones we need
+macmv lx2, lx1, lx2, -1;
+;b2*x[n-2]
+macmv lx1, inl, lx1, 0;
+;b1*x[n-1]
+macmv t1, t1, inl, a2;
+;b0*x[n]
+macmv ly2, ly1, ly2, a2;
+;a2*y[n-2]
+macmv t1, t1, ly1, 0;
+;a1*y[n-1]
+macs t2, accum, 0x0, 0x0;
+;we copy the value of the accumulator to t2, so we can use it
+macints ly1, 0x0, t2, sca;
+;we scale it up by 2, because the coefficients have been initially scaled down
+;to prevent overflow
+macs outl, ly1, 0x0, 0x0;
+;we copy everything to the output 
+end

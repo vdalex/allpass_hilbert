@@ -1,0 +1,52 @@
+; New microcode
+	name "LPF_DATA";
+	copyright "Copyright (c) 2004.";
+	created "03/08/2010";
+	engine "kX";
+	; comment "";
+	guid "f3e2cb43-ae9c-42d7-997e-d0d6435d11f0";
+	; -- generated GUID
+
+
+output outf11,outf12,outf13,outf14,outf15,outf16,outf17
+output outf21,outf22,outf23,outf24,outf25,outf26,outf27
+
+
+static f11=-0.10000; +
+static f12= 0.14074;-
+static f13= -0.15064;+
+static f14= 0.07882;-
+static f15= -0.02222;+
+static f16=0
+static f17= 0
+
+
+
+static f21= -0.10000; +
+static f22= 0.16544; -
+static f23= -0.23210; +
+static f24= 0.17050; -
+static f25= -0.08772; +
+static f26= 0.02158;-
+static f27= 0
+
+
+
+macs outf11,f11,0,0
+macs outf12,f12,0,0
+macs outf13,f13,0,0
+macs outf14,f14,0,0
+macs outf15,f15,0,0
+macs outf16,f16,0,0
+macs outf17,f17,0,0
+
+macs outf21,f21,0,0
+macs outf22,f22,0,0
+macs outf23,f23,0,0
+macs outf24,f24,0,0
+macs outf25,f25,0,0
+macs outf26,f26,0,0
+macs outf27,f27,0,0
+
+end
+

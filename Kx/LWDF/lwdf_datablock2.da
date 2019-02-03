@@ -1,0 +1,44 @@
+; New microcode
+	name "lwfd_datablock2";
+	copyright "Copyright (c) 2004.";
+	created "07/04/2010";
+	engine "kX";
+	; comment "";
+	guid "0efdc87d-385b-4ca6-939d-f23590c1fd37";
+	; -- generated GUID
+
+
+output outa11,outa12,outa13,outa14,outa15
+output outa21,outa22,outa23,outa24,outa25
+; itramsize 0
+; xtramsize 0
+
+; code
+static a11=0.110875654
+static a12=0.028532387
+static a13=0.458365048
+static a14=0.263042458
+static a15=0.107390797
+static a21=0.031866525
+static a22=0.216120281
+static a23=0.132803859
+static a24=0.172105563
+static a25=0.144762635
+
+    
+
+macmv outa11,a11,0,0
+macmv outa12,a12,0,0
+macmv outa13,a13,0,0
+macmv outa14,a14,0,0
+macmv outa15,a15,0,0
+macmv outa21,a21,0,0
+macmv outa22,a22,0,0
+macmv outa23,a23,0,0
+macmv outa24,a24,0,0
+macmv outa25,a25,0,0
+
+end
+
+
+end

@@ -1,0 +1,28 @@
+; New microcode
+	name "type_D";
+	copyright "Copyright (c) 2004.";
+	created "06/26/2010";
+	engine "kX";
+	; comment "";
+	guid "4d4df514-14a8-400d-88e6-64111d275600";
+	; -- generated GUID
+
+;Adaptor type D for -1<y<-0.5 (a=1+y)
+
+input in1,in2,a
+output out1,out2
+static p,t1,t2,d        
+
+macs 0x0,0x0,0x0,0x0 
+macs out2,0,d,1  
+;{p=a*(in2-in1)
+macs t1, in2, in1, -1;   t1=in2-in1  
+macs p, 0, t1, a;      p=a*t1
+;} 
+;[out2=p-in2, out1=p-in2-(in2-in1)
+macs t2, p, in2,-1;     t2=p-in2
+macs d, 0, t2, 1;  out2=t2
+macs out1, t2, t1, -1;    out1=t2-t1
+ 
+end
+

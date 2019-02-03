@@ -1,0 +1,24 @@
+; New microcode
+	name "lwdf_butter";
+	copyright "Copyright (c) 2004.";
+	created "06/20/2009";
+	engine "kX";
+	; comment "";
+	guid "2411621a-31b7-4c78-88cc-fcee7f3df1aa";
+	; -- generated GUID
+
+output outa1,outa2,outa3,outa4,outa5
+
+static a1=0.06094
+static a2=0.03807
+static a3=0.00197
+static a4=0.09669
+static a5=0.00197
+  
+macs outa1,0,a1,1
+macs outa2,0,a2,1
+macs outa3,0,a3,1
+macs outa4,0,a4,1
+macs outa5,0,a5,1
+
+end

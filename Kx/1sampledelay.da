@@ -1,0 +1,17 @@
+; New microcode
+	name "1sampledelay";
+	copyright "Copyright (c) 2004.";
+	created "06/20/2009";
+	engine "kX";
+	; comment "";
+	guid "cc79d11a-e426-43d6-a20e-ed3400972039";
+	; -- generated GUID
+
+input in
+output out
+static b
+macs 0,0,0,0
+macs out,b,0,0
+macs b,in,0,0
+
+end

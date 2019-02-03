@@ -1,0 +1,106 @@
+; New microcode
+	name "LPF";
+	copyright "Copyright (c) 2004.";
+	created "01/14/2009";
+	engine "kX";
+	; comment "";
+	guid "6a062e57-3016-452f-b480-e03cba6762d3";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+ ; itramsize 0
+; xtramsize 0
+
+; code
+;назначаем входы и выходы
+input iin   
+output iout
+
+;объявляем статические переменные и обнуляем их
+static z1=0 
+static z2=0
+static z3=0
+static z4=0
+static z5=0
+static z6=0
+static z7=0
+static z8=0
+static z9=0
+static z10=0
+static z11=0
+static z12=0
+static z13=0
+static z14=0
+static z15=0
+static z16=0
+static z17=0
+static z18=0
+static z19=0
+static z20=0
+static z21=0
+static z22=0
+static z23=0
+static z24=0
+static z25=0
+static z26=0
+static z27=0
+static z28=0
+static z29=0
+static z30=0
+;static z31=0
+
+
+; обнуляем аккумулятор
+macs 0x0,0x0,0x0,0x0    
+
+;структура ниже  - фильтр КИХ
+
+       
+;macmv z31,z30,z31,
+macmv z30,z29,z30,-0.000001216975217742       
+macmv z29,z28,z29,-0.000017424739018052
+macmv z28,z27,z28,-0.000038281103587172      
+macmv z27,z26,z27, 0.000128657299894222
+macmv z26,z25,z26, 0.000834390264128694   
+macmv z25,z24,z25, 0.001930483615856471
+macmv z24,z23,z24, 0.001655928668824005        
+macmv z23,z22,z23,-0.003147084752621402
+macmv z22,z21,z22,-0.013501156351545137     
+macmv z21,z20,z21,-0.022796441439253457
+macmv z20,z19,z20,-0.015405560137973340       
+macmv z19,z18,z19, 0.024828326328151688
+macmv z18,z17,z18, 0.099134746819862785        
+macmv z17,z16,z17, 0.184403397295261980
+macmv z16,z15,z16, 0.241991235207236480         
+macmv z15,z14,z15, 0.241991235207236480 
+macmv z14,z13,z14,0.184403397295261980          
+macmv z13,z12,z13,0.099134746819862785 
+macmv z12,z11,z12,0.024828326328151695           
+macmv z11,z10,z11,-0.015405560137973335 
+macmv z10,z9,z10,-0.022796441439253457         
+macmv z9,z8,z9,-0.013501156351545137  
+macmv z8,z7,z8,-0.003147084752621402          
+macmv z7,z6,z7,0.001655928668824006   
+macmv z6,z5,z6,0.001930483615856472         
+macmv z5,z4,z5,0.000834390264128695   
+macmv z4,z3,z4, 0.000128657299894223           
+macmv z3,z2,z3,-0.000038281103587172  
+macmv z2,z1,z2, -0.000017424739018052         
+macmv z1,iin,z1,-0.000001216975217742  
+
+; накопленую в аккумуляторе сумму произведений подаем на выход
+macs iout,accum,0x0,0x0
+
+
+end
+
+
+
+
+
+
+

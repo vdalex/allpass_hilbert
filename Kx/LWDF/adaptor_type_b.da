@@ -1,0 +1,24 @@
+; New microcode
+	name "adaptor_typeB";
+	copyright "Copyright (c) 2004.";
+	created "05/16/2010";
+	engine "kX";
+	; comment "";
+	guid "c13cfcb4-91cb-4a0d-948b-2e7f83132bc1";
+	; -- generated GUID
+ ;Adaptor type B for 0<y<=0.5 (a=y)
+
+input in1,in2,a
+output out1,out2
+static p,t1       
+
+macs 0x0,0x0,0x0,0x0  
+;{p=a*(in2-in1)
+macsn t1, in2, in1, 1;   t1=in2-in1  
+macs p, 0x0, a, t1;      p=a*t1
+;} 
+;[out2=p+in1, out1=p+in2
+macs out2, p, in1, 1; out2=p+in1    
+macs out1, p, in2, 1; out1=p+in2   
+ 
+end

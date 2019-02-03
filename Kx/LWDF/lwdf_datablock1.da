@@ -1,0 +1,41 @@
+; New microcode
+	name "lwdf_datablock1";
+	copyright "Copyright (c) 2004.";
+	created "06/26/2010";
+	engine "kX";
+	; comment "";
+	guid "54d0e833-c205-4d65-acc3-2fa6fe2b3fcc";
+	; -- generated GUID
+
+
+output outa10,outa13,outa14,outa17,outa18
+output outa21,outa22,outa25,outa26
+; itramsize 0
+; xtramsize 0
+
+; code
+static a10=0.33228647
+static a13=0.381164832
+static a14=0.457358479
+static a17=0.080855796
+static a18=0.217705053
+static a21=0.49630558
+static a22=0.202082263
+static a25=0.233713416
+static a26=0.328193215
+     
+
+macs outa10,a10,0,0
+macs outa13,a13,0,0
+macs outa14,a14,0,0
+macs outa17,a17,0,0
+macs outa18,a18,0,0
+macs outa21,a21,0,0
+macs outa22,a22,0,0
+macs outa25,a25,0,0
+macs outa26,a26,0,0
+
+end
+
+
+end

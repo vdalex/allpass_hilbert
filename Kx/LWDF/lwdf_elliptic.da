@@ -1,0 +1,45 @@
+; New microcode
+	name "lwdf_elliptic";
+	copyright "Copyright (c) 2004.";
+	created "10/24/2010";
+	engine "kX";
+	; comment "";
+	guid "6ec66dd9-c230-4f31-9e32-cf3f74f5413a";
+	; -- generated GUID
+
+
+output outa11,outa12,outa13,outa14,outa15
+output outa21,outa22,outa23,outa24,outa25,outa26
+
+static a11=0.01741038097119596 
+static a12=0.050498535891072893 
+static a13=0.11653128678954305 
+static a14=0.031937746546882306 
+static a15=0.11246927934790441 
+static a21=0.058771505268348068 
+static a22=0.044537259424924147 
+static a23=0.18112621313395794 
+static a24= 0.01556757892351579
+static a25= 0
+static a26= 0
+
+
+
+  
+macs outa11,a11,1,0
+macs outa12,a12,1,0
+macs outa13,a13,1,0
+macs outa14,a14,1,0
+macs outa15,a15,1,0
+macs outa21,a21,1,0
+macs outa22,a22,1,0
+macs outa23,a23,1,0
+macs outa24,a24,1,0
+macs outa25,a25,1,0
+macs outa26,a26,1,0
+
+
+
+
+
+end

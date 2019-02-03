@@ -1,0 +1,40 @@
+; New microcode
+	name "symmetra_peak";
+	copyright "Copyright (c) 2004.";
+	created "11/29/2009";
+	engine "kX";
+	; comment "";
+	guid "a429897e-d364-4e92-8d69-9ae72c196f03";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+output outf11,outf12,outf13,outf14
+output outf21,outf22,outf23,outf24
+; itramsize 0
+; xtramsize 0
+
+; code
+static f11=0.956462932178828
+static f12=0.956462932178828
+static f13=0.956462932178828
+static f14=0.956462932178828
+static f21=0.956462932178828
+static f22=0.956462932178828
+static f23=0.956462932178828
+static f24=0.956462932178828      
+
+macs outf11,f11,0,0
+macs outf12,f12,0,0
+macs outf13,f13,0,0
+macs outf14,f14,0,0
+macs outf21,f21,0,0
+macs outf22,f22,0,0
+macs outf23,f23,0,0
+macs outf24,f24,0,0
+
+end
+

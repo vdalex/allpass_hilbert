@@ -1,0 +1,7 @@
+[params, fval, exitflag, result] = fminsearch(
+												'phcost', params, 
+												optimset('MaxIter',4000, 'MaxFunEvals', 5000, 'TolFun',1e-12, 'TolX',1e-8, 'Display','on'),
+												freqopt, 
+												phdesired, 
+												pnorm
+											 )  % find optimal parameters

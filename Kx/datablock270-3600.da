@@ -1,0 +1,47 @@
+; New microcode
+	name "datablock270-3600";
+	copyright "Copyright (c) 2004.";
+	created "11/28/2009";
+	engine "kX";
+	; comment "";
+	guid "4ad1e97b-3efc-4e56-84d2-f7ee6f5bd837";
+	; -- generated GUID
+ 
+output outf11,outf12,outf13,outf14
+output outf21,outf22,outf23,outf24
+
+
+static f11=0.971057847259525
+static f12=0.905610511213471
+static f13=0.744991635725652
+static f14=0.0412051667535975
+
+static f21=0.99099767379891
+static f22=0.944594654492265
+static f23=0.844916999578174
+static f24=0.558163373511011   
+
+
+
+
+macs outf11,f11,0,0
+macs outf12,f12,0,0
+macs outf13,f13,0,0
+macs outf14,f14,0,0
+
+
+macs outf21,f21,0,0
+macs outf22,f22,0,0
+macs outf23,f23,0,0
+macs outf24,f24,0,0
+
+
+
+end
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+end

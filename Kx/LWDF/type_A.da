@@ -1,0 +1,28 @@
+; New microcode
+	name "type_A";
+	copyright "Copyright (c) 2004.";
+	created "06/26/2010";
+	engine "kX";
+	; comment "";
+	guid "f3ab3988-37fa-43b0-a137-594fbb9265dc";
+	; -- generated GUID
+
+
+;Adaptor type A for 0.5<y<1 (a=1-y)
+
+input in1,in2,a
+output out1,out2
+static p,t1,t2,d        
+
+macs 0x0,0x0,0x0,0x0
+macs out2,0,d,1 
+;{p=in1-in2
+macsn p,in1, in2,1;     
+  
+;} 
+;[out2=a*p1+in2, out1=out2-p
+macs d,in2,a,p;  
+macsn out1,d,p,1;    
+ 
+end
+

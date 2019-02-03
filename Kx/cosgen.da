@@ -1,0 +1,51 @@
+; New microcode
+	name "cosgen";
+	copyright "Copyright (c) 2004.";
+	created "01/14/2009";
+	engine "kX";
+	; comment "";
+	guid "64beaaff-4ab6-4db7-8eaa-a3716c15bac4";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+input iin   
+output cout,sout  
+;объявляем статические переменные и обнуляем их
+static z11=1
+static z12=0
+static z13=-1
+static z14=0
+static t1=0
+static t2=0
+
+static z1=1
+static z2=0
+static z3=-1
+static z4=0
+
+; обнуляем аккумулятор
+macs 0x0,0x0,0x0,0x0    
+
+;структура ниже  - фильтр КИХ
+macmv t1,z11,z14,1   
+macmv z11,z12,z14,1        
+macmv z12,z13,z14,1          
+macmv z13,z14,z13,1  
+macmv z14,t1,z12,1         
+
+
+macmv t2,z1,1,1   
+macmv z1,z2,1,1        
+macmv z2,z3,1,1          
+macmv z3,z4,1,1  
+macmv z4,t2,1,1         
+
+
+macs cout,z11,0,0
+macs sout,z1,0,0
+
+
+
+end

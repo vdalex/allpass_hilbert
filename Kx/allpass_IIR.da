@@ -1,0 +1,123 @@
+; New microcode
+	name "allpass_IIR ";
+	copyright "Copyright (c) 2009.";
+	created "09/28/2009";
+	engine "kX";
+	; comment "";
+	guid "4468d899-db11-4c39-8b07-2f454ca53ec2";
+	; -- generated GUID
+
+
+input in1,in2
+output out1,out2
+
+static f11=0.47940083485582
+static f12=0.87621849353931
+static f13=0.9765975895082
+static f14=0.99749925593555
+static f21=0.1617584983677
+static f22=0.73302893234149
+static f23=0.94534970032911
+static f24=0.99059915668453 
+
+
+static sca=0x1;
+static lx11_1=0x0,lx11_2=0x0, ly11_1=0x0, ly11_2=0x0;
+static lx12_1=0x0,lx12_2=0x0, ly12_1=0x0, ly12_2=0x0;
+static lx13_1=0x0,lx13_2=0x0, ly13_1=0x0, ly13_2=0x0;
+static lx14_1=0x0,lx14_2=0x0, ly14_1=0x0, ly14_2=0x0;
+static lx21_1=0x0,lx21_2=0x0, ly21_1=0x0, ly21_2=0x0;
+static lx22_1=0x0,lx22_2=0x0, ly22_1=0x0, ly22_2=0x0;
+static lx23_1=0x0,lx23_2=0x0, ly23_1=0x0, ly23_2=0x0;
+static lx24_1=0x0,lx24_2=0x0, ly24_1=0x0, ly24_2=0x0;
+
+
+temp t11_1, t11_2
+temp t12_1, t12_2
+temp t13_1, t13_2
+temp t14_1, t14_2
+temp t21_1, t21_2
+temp t22_1, t22_2
+temp t23_1, t23_2
+temp t24_1, t24_2
+
+
+macs 0x0, 0x0, 0x0, 0x0;
+macmv lx11_2, lx11_1, lx11_2, -1;  ;b2*x[n-2]
+macmv lx11_1, in1, 0, 0;  b1*x[n-1]
+macmv t11_1, t11_1, in1, f11;  b0*x[n]
+macmv ly11_2, ly11_1, ly11_2, f11; a2*y[n-2]
+macmv t11_1, t11_1, 0, 0; a1*y[n-1]
+macs t11_2, accum, 0x0, 0x0;
+
+
+macs 0x0, 0x0, 0x0, 0x0;
+macmv lx12_2, lx12_1, lx12_2, -1;
+macmv lx12_1, t11_2, 0, 0;
+macmv t12_1, t12_1, t11_2, f12;
+macmv ly12_2, ly12_1, ly12_2, f12;
+macmv t12_1, t12_1, 0, 0;
+macs t11_2, accum, 0x0, 0x0;
+
+
+macs 0x0, 0x0, 0x0, 0x0;
+macmv lx13_2, lx13_1, lx13_2, -1;
+macmv lx13_1, t11_2, 0, 0;
+macmv t13_1, t13_1, t11_2, f13;
+macmv ly13_2, ly13_1, ly13_2, f13;
+macmv t13_1, t13_1, 0, 0;
+macs t11_2, accum, 0x0, 0x0;
+
+
+macs 0x0, 0x0, 0x0, 0x0;
+macmv lx14_2, lx14_1, lx14_2, -1;
+macmv lx14_1, t11_2, 0, 0;
+macmv t14_1, t14_1, t11_2, f14;
+macmv ly14_2, ly14_1, ly14_2, f14;
+macmv t14_1, t14_1, 0, 0;
+macs t11_2, accum, 0x0, 0x0;
+
+;*********************************
+
+macs 0x0, 0x0, 0x0, 0x0;
+macmv lx21_2, lx21_1, lx21_2, -1;
+macmv lx21_1, in2, 0, 0;
+macmv t21_1, t21_1, in2, f21;
+macmv ly21_2, ly21_1, ly21_2, f21;
+macmv t21_1, t21_1, 0, 0;
+macs t21_2, accum, 0x0, 0x0;
+
+
+macs 0x0, 0x0, 0x0, 0x0;
+macmv lx22_2, lx22_1, lx22_2, -1;
+macmv lx22_1, t21_2, 0, 0;
+macmv t22_1, t22_1, t21_2, f22;
+macmv ly22_2, ly22_1, ly22_2, f22;
+macmv t22_1, t22_1, 0, 0;
+macs t21_2, accum, 0x0, 0x0;
+
+
+macs 0x0, 0x0, 0x0, 0x0;
+macmv lx23_2, lx23_1, lx23_2, -1;
+macmv lx23_1, t21_2, 0, 0;
+macmv t23_1, t23_1, t21_2, f23;
+macmv ly23_2, ly23_1, ly23_2, f23;
+macmv t23_1, t23_1, 0, 0;
+macs t21_2, accum, 0x0, 0x0;
+
+
+macs 0x0, 0x0, 0x0, 0x0;
+macmv lx24_2, lx24_1, lx24_2, -1;
+macmv lx24_1, t21_2, 0, 0;
+macmv t24_1, t24_1, t21_2, f24;
+macmv ly24_2, ly24_1, ly24_2, f24;
+macmv t24_1, t24_1, 0, 0;
+macs t21_2, accum, 0x0, 0x0;
+
+macs out1,t11_2, 0x0,0x0
+macs out2,t21_2, 0x0,0x0
+
+
+
+end
+
