@@ -27,6 +27,27 @@ H(z) = (z⁻¹ − c) / (1 − c·z⁻¹)          pole at z = c,  |c| < 1
 y[n] = −c·x[n] + x[n−1] + c·y[n−1]      difference equation
 ```
 
+## Second-order (biquad) sections
+
+Two cascaded first-order sections combine **exactly** into one 2nd-order all-pass
+biquad (the "dual stage" of the AES paper / the *2-Order All-Pass Filter* table in the
+`.ods`). Grouping does not change the phase response but halves the number of filter
+blocks — handy for DSP hardware / libraries built around biquads:
+
+```
+H(z) = (a2 + a1·z⁻¹ + z⁻²) / (1 + a1·z⁻¹ + a2·z⁻²)
+a1 = −(c1 + c2),   a2 = c1·c2                    (c1, c2 = the two first-order poles)
+y[n] = a2·x[n] + a1·x[n−1] + x[n−2] − a1·y[n−1] − a2·y[n−2]
+```
+
+`report()` prints both the first-order coefficients and the biquad form (and verifies the
+grouping reproduces the phase to ~1e-12°). Adjacent frequency-sorted sections are paired;
+with an odd `N` the highest section is left first-order. Programmatic access:
+
+```python
+leg1, leg2 = dp.biquads(d)          # list of {"order":2,"a1":..,"a2":..} / {"order":1,"c":..}
+```
+
 ## Two design modes
 
 The `method` argument selects **where** the bilinear conversion happens:

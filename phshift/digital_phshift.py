@@ -134,6 +134,80 @@ def phcost_analog(params_flat, freq, phdesired, pnorm):
 
 
 # ---------------------------------------------------------------------------
+#  Second-order (biquad) grouping
+# ---------------------------------------------------------------------------
+def to_biquads(poles):
+    """Group a leg's first-order all-pass poles into 2nd-order all-pass biquads.
+
+    Two cascaded first-order all-pass sections with real poles c1, c2
+
+        (z^-1 - c1)/(1 - c1 z^-1) * (z^-1 - c2)/(1 - c2 z^-1)
+
+    combine *exactly* into one 2nd-order all-pass biquad
+
+        H(z) = (a2 + a1 z^-1 + z^-2) / (1 + a1 z^-1 + a2 z^-2)
+        a1 = -(c1 + c2),   a2 = c1 * c2
+
+    (numerator = mirror of denominator -> unit magnitude, phase doubled).
+    This is the "dual stage" of the AES paper / the 2-Order table in the .ods,
+    and halves the number of filter blocks.  Grouping does not change the
+    overall phase response.
+
+    Adjacent (frequency-sorted) sections are paired.  With an odd number of
+    sections the highest one is left as a first-order section.
+
+    Parameters
+    ----------
+    poles : (N,) array of real first-order all-pass coefficients c (|c| < 1).
+
+    Returns
+    -------
+    list of dicts, each either
+        {"order": 2, "a1": a1, "a2": a2, "poles": (c1, c2)}   or
+        {"order": 1, "c": c}
+    """
+    c = list(np.asarray(poles, dtype=float).ravel())
+    sections, i = [], 0
+    while i + 1 < len(c):
+        c1, c2 = c[i], c[i + 1]
+        sections.append({"order": 2, "a1": -(c1 + c2), "a2": c1 * c2,
+                         "poles": (c1, c2)})
+        i += 2
+    if i < len(c):
+        sections.append({"order": 1, "c": c[i]})
+    return sections
+
+
+def biquads(d):
+    """Return the biquad section list for each leg of a design ``d``.
+
+    Returns a tuple ``(leg1_sections, leg2_sections)`` from :func:`to_biquads`.
+    """
+    c = d["c"]
+    return to_biquads(c[:, 0]), to_biquads(c[:, 1])
+
+
+def section_response(section, freq, fs):
+    """Complex frequency response of one first- or second-order all-pass section."""
+    w = 2.0 * np.pi * np.asarray(freq, dtype=float) / fs
+    z1 = np.exp(-1j * w)
+    if section["order"] == 1:
+        c = section["c"]
+        return (z1 - c) / (1.0 - c * z1)
+    a1, a2 = section["a1"], section["a2"]
+    z2 = z1 * z1
+    return (a2 + a1 * z1 + z2) / (1.0 + a1 * z1 + a2 * z2)
+
+
+def biquad_phase(leg_sections, freq, fs):
+    """Total positive phase (deg, matches phfunc) of a cascade of sections."""
+    H = np.ones(np.size(freq), dtype=complex)
+    for s in leg_sections:
+        H = H * section_response(s, freq, fs)
+    return -np.degrees(np.angle(H))
+
+
+# ---------------------------------------------------------------------------
 #  Design driver
 # ---------------------------------------------------------------------------
 def design(phdesired, N, fa, fb, fs, pnorm=2, method="digital", verbose=True):
@@ -248,12 +322,42 @@ def report(d):
                   % (leg_names[l], n + 1, c[n, l], f0[n, l], fd[n, l]))
         print()
 
+    # Second-order (biquad) grouping -- the efficient "dual stage" form.
+    leg_bq = biquads(d)
+    print("Second-order all-pass biquads:  H(z) = (a2 + a1 z^-1 + z^-2)/(1 + a1 z^-1 + a2 z^-2)")
+    print("  difference equation:  y[n] = a2*x[n] + a1*x[n-1] + x[n-2]"
+          " - a1*y[n-1] - a2*y[n-2]\n")
+    bqhead = "  %-11s %-6s %14s %14s   %s" % (
+        "Leg", "Biquad", "a1", "a2", "from poles")
+    print(bqhead)
+    print("  " + "-" * (len(bqhead) - 2))
+    for l in range(2):
+        for k, s in enumerate(leg_bq[l]):
+            if s["order"] == 2:
+                print("  %-11s %-6d %14.9f %14.9f   c=(%.5f, %.5f)"
+                      % (leg_names[l], k + 1, s["a1"], s["a2"], *s["poles"]))
+            else:
+                print("  %-11s %-6d %14s %14s   c=%.5f  (1st-order leftover)"
+                      % (leg_names[l], k + 1, "-", "-", s["c"]))
+        print()
+
     # Worst-case phase error over the design band (sanity check).
     fcheck = np.logspace(np.log10(d["fa"]), np.log10(d["fb"]), 2000)
     ph = phfunc(d["params"], fcheck, fs)
     err = ph[1] - ph[0] - d["phdesired"]
     print("  Max |phase error| in band = %.4f deg   (RMS = %.4f deg)"
           % (np.max(np.abs(err)), np.sqrt(np.mean(err ** 2))))
+
+    # Confirm the biquad grouping reproduces the first-order phase exactly.
+    def _leg_H(sections):
+        H = np.ones_like(fcheck, dtype=complex)
+        for s in sections:
+            H = H * section_response(s, fcheck, fs)
+        return H
+    dbq = -np.degrees(np.angle(_leg_H(leg_bq[1]) * np.conj(_leg_H(leg_bq[0]))))
+    mism = np.abs(((dbq - (ph[1] - ph[0]) + 180) % 360) - 180)  # wrap-safe
+    print("  Biquad vs 1st-order phase mismatch = %.2e deg  (should be ~0)"
+          % np.max(mism))
 
 
 def plot(d, save_prefix=None, show=True):
