@@ -119,6 +119,39 @@ wdf.plot_compare(d, bits=8, save_prefix="cmp")   # IRR / error vs frequency
 y = wdf.filter_leg(x, dp.biquads(d)[0], "wdf")   # actually filter a signal
 ```
 
+## Spec-driven minimum-order design (`elliptic_phshift.py`)
+
+The everyday question is not "how good is N sections?" but "**I need ≥ X dB of image
+rejection from fa to fb — what is the smallest N?**". `elliptic_phshift.py` answers it.
+
+- **Synthesis** reuses the equiripple (large p-norm → equal-ripple, globally optimal for a
+  given N) design.
+- **Order estimate** — the worst-case in-band IRR of the equiripple splitter is almost
+  perfectly linear in N, with a per-section gain that depends only on the log band ratio
+  `L = ln(fb/fa)` (calibrated to the designs, accurate to ~2 dB):
+
+  ```
+  IRR(N) ≈ s(L)·N − 6.1 dB,     s(L) ≈ 40.1·L^(−0.712)  dB per section
+  ```
+
+  Narrow bands (small L) buy more dB per section. `min_sections` uses this only to *start*
+  the search, then **designs and verifies upward**, so the returned N is guaranteed.
+
+```python
+import elliptic_phshift as ep
+N, d, irr = ep.min_sections(fa=270, fb=3600, fs=22050, irr_db=70)
+# -> N=4/leg  (N=3 gives 57 dB, N=4 gives 78 dB ≥ 70)
+ep.order_estimate(270, 3600, 70)     # 3.74  (fast closed-form guess)
+ep.predicted_irr(4, 270, 3600)       # ~75 dB
+```
+
+> Note: a *pure* one-line elliptic (Zolotarev) formula for the corner frequencies exists in
+> the classical literature (Bedrosian), but the optimal corners are more centre-clustered
+> than the simple Jacobi-`sn`/`cd` node schemes and need more intricate special-function
+> machinery. This module instead pairs the **closed-form order law** with the proven
+> equiripple synthesis — same practical result (spec → smallest verified design), without
+> unverified special-function code.
+
 ## Two design modes
 
 The `method` argument selects **where** the bilinear conversion happens:
