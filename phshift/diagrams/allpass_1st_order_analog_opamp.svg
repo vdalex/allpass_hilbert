@@ -1,0 +1,49 @@
+<svg width="100%" viewBox="0 0 680 280" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>First-order analog all-pass, op-amp section</title>
+<desc>Unity-gain op-amp with two equal resistors R on the inverting input and an R1-C1 low-pass on the non-inverting input, realising H(s) = (1 - sR1C1)/(1 + sR1C1).</desc>
+<style>
+svg{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.t{font-size:14px;fill:var(--p)}.ts{font-size:12px;fill:var(--s)}.th{font-size:14px;font-weight:500;fill:var(--p)}
+.box{fill:var(--bg2);stroke:var(--b);stroke-width:.8}
+.arr{stroke:var(--s);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+:root{--p:#1f2328;--s:#57606a;--bg2:#ffffff;--b:#8c959f}
+@media (prefers-color-scheme:dark){:root{--p:#e6edf3;--s:#9aa4ae;--bg2:#0d1117;--b:#6e7681}}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<text class="t" x="44" y="154" text-anchor="start">Vin</text>
+<line class="arr" x1="78" y1="150" x2="120" y2="150"/>
+<circle cx="120" cy="150" r="3" fill="var(--p)"/>
+<line class="arr" x1="120" y1="150" x2="120" y2="120"/>
+<line class="arr" x1="120" y1="120" x2="170" y2="120"/>
+<rect class="box" x="170" y="112" width="50" height="16" rx="2"/>
+<text class="ts" x="195" y="108" text-anchor="middle">R</text>
+<line class="arr" x1="220" y1="120" x2="380" y2="120"/>
+<line class="arr" x1="500" y1="150" x2="500" y2="80"/>
+<line class="arr" x1="500" y1="80" x2="480" y2="80"/>
+<rect class="box" x="430" y="72" width="50" height="16" rx="2"/>
+<text class="ts" x="455" y="68" text-anchor="middle">R</text>
+<line class="arr" x1="430" y1="80" x2="320" y2="80"/>
+<line class="arr" x1="320" y1="80" x2="320" y2="120"/>
+<circle cx="320" cy="120" r="3" fill="var(--p)"/>
+<line class="arr" x1="120" y1="150" x2="120" y2="180"/>
+<line class="arr" x1="120" y1="180" x2="170" y2="180"/>
+<rect class="box" x="170" y="172" width="50" height="16" rx="2"/>
+<text class="ts" x="195" y="168" text-anchor="middle">R1</text>
+<line class="arr" x1="220" y1="180" x2="380" y2="180"/>
+<circle cx="300" cy="180" r="3" fill="var(--p)"/>
+<line class="arr" x1="300" y1="180" x2="300" y2="204"/>
+<line class="arr" x1="286" y1="204" x2="314" y2="204"/>
+<line class="arr" x1="286" y1="211" x2="314" y2="211"/>
+<line class="arr" x1="300" y1="211" x2="300" y2="236"/>
+<text class="ts" x="324" y="211" text-anchor="start">C1</text>
+<line class="arr" x1="284" y1="236" x2="316" y2="236"/>
+<line class="arr" x1="290" y1="241" x2="310" y2="241"/>
+<line class="arr" x1="295" y1="246" x2="305" y2="246"/>
+<polygon class="box" points="380,108 380,192 472,150"/>
+<text class="th" x="391" y="125" text-anchor="middle">−</text>
+<text class="th" x="391" y="186" text-anchor="middle">+</text>
+<line class="arr" x1="472" y1="150" x2="500" y2="150"/>
+<circle cx="500" cy="150" r="3" fill="var(--p)"/>
+<line class="arr" x1="500" y1="150" x2="596" y2="150"/>
+<text class="t" x="600" y="154" text-anchor="start">Vout</text>
+</svg>

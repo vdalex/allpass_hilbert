@@ -1,0 +1,34 @@
+<svg width="100%" viewBox="0 0 680 200" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>First-order all-pass, one-multiplier lattice (WDF)</title>
+<desc>Low-sensitivity all-pass section that uses a single multiplier equal to the pole c; the structure is lossless so magnitude stays unity under coefficient quantisation.</desc>
+<style>
+svg{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.t{font-size:14px;fill:var(--p)}.ts{font-size:12px;fill:var(--s)}.th{font-size:14px;font-weight:500;fill:var(--p)}
+.box{fill:var(--bg2);stroke:var(--b);stroke-width:.8}
+.arr{stroke:var(--s);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+:root{--p:#1f2328;--s:#57606a;--bg2:#ffffff;--b:#8c959f}
+@media (prefers-color-scheme:dark){:root{--p:#e6edf3;--s:#9aa4ae;--bg2:#0d1117;--b:#6e7681}}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<text class="t" x="44" y="94" text-anchor="start">x[n]</text>
+<line class="arr" x1="76" y1="90" x2="118" y2="90" marker-end="url(#arrow)"/>
+<circle cx="120" cy="90" r="3" fill="var(--p)"/>
+<path class="arr" d="M120 90 L120 48 L146 48" marker-end="url(#arrow)"/>
+<rect class="box" x="150" y="33" width="50" height="30" rx="4"/><text class="th" x="175" y="52" text-anchor="middle">z⁻¹</text>
+<path class="arr" d="M200 48 L515 48 L515 77" marker-end="url(#arrow)"/>
+<line class="arr" x1="120" y1="90" x2="200" y2="90" marker-end="url(#arrow)"/>
+<circle class="box" cx="215" cy="90" r="13"/><text class="th" x="215" y="95" text-anchor="middle">+</text>
+<text class="ts" x="201" y="107" text-anchor="middle">−</text>
+<line class="arr" x1="228" y1="90" x2="298" y2="90" marker-end="url(#arrow)"/>
+<polygon class="box" points="300,78 300,102 330,90"/>
+<text class="ts" x="315" y="72" text-anchor="middle">c</text>
+<line class="arr" x1="330" y1="90" x2="502" y2="90" marker-end="url(#arrow)"/>
+<text class="ts" x="500" y="82" text-anchor="middle">−</text>
+<circle class="box" cx="515" cy="90" r="13"/><text class="th" x="515" y="95" text-anchor="middle">+</text>
+<circle cx="560" cy="90" r="3" fill="var(--p)"/>
+<line class="arr" x1="528" y1="90" x2="588" y2="90" marker-end="url(#arrow)"/>
+<text class="t" x="592" y="94" text-anchor="start">y[n]</text>
+<path class="arr" d="M560 90 L560 162 L353 162" marker-end="url(#arrow)"/>
+<rect class="box" x="300" y="147" width="50" height="30" rx="4"/><text class="th" x="325" y="166" text-anchor="middle">z⁻¹</text>
+<path class="arr" d="M300 162 L215 162 L215 103" marker-end="url(#arrow)"/>
+</svg>

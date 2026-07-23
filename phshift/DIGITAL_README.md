@@ -27,6 +27,38 @@ H(z) = (z⁻¹ − c) / (1 − c·z⁻¹)          pole at z = c,  |c| < 1
 y[n] = −c·x[n] + x[n−1] + c·y[n−1]      difference equation
 ```
 
+## Topologies
+
+**System — two-leg phase splitter.** The input feeds two all-pass legs; their outputs
+I and Q differ by ≈90° across the band. This is what the optimiser fits.
+
+![Phase-splitter system](diagrams/allpass_system_phase_splitter.svg)
+
+**First-order section — Direct Form II.** Canonical single-delay realisation, two
+multipliers (`−c` feed-forward, `+c` feedback): `H(z) = (z⁻¹−c)/(1−c·z⁻¹)`.
+
+![First-order Direct Form II](diagrams/allpass_1st_order_direct_form2.svg)
+
+**First-order section — one-multiplier lattice (WDF).** Same transfer function, but a
+single multiplier equal to the pole `c`. Structurally lossless: for any quantised `c`
+the numerator stays the mirror of the denominator, so `|H|≡1` and the pole only shifts by
+one quantisation step — the low-sensitivity structure used in the fixed-point comparison
+below.
+
+![First-order WDF lattice](diagrams/allpass_1st_order_wdf_lattice.svg)
+
+**Second-order section — biquad.** Two first-order sections cascade into one 2nd-order
+all-pass biquad (`a1 = −(c1+c2)`, `a2 = c1·c2`); see the biquad section below.
+
+![Second-order biquad](diagrams/allpass_2nd_order_biquad_cascade.svg)
+
+**Analog original — op-amp section.** The `phshift.m` network: a unity-gain op-amp with
+two equal resistors `R` on the inverting input and an `R1–C1` low-pass on the non-inverting
+input, giving `H(s) = (1 − sR1C1)/(1 + sR1C1)`, with the 90° frequency `f0 = 1/(2π·R1·C1)`.
+The bilinear transform maps this section to the digital `c` above.
+
+![Analog op-amp all-pass](diagrams/allpass_1st_order_analog_opamp.svg)
+
 ## Second-order (biquad) sections
 
 Two cascaded first-order sections combine **exactly** into one 2nd-order all-pass
