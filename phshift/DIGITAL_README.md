@@ -48,6 +48,45 @@ with an odd `N` the highest section is left first-order. Programmatic access:
 leg1, leg2 = dp.biquads(d)          # list of {"order":2,"a1":..,"a2":..} / {"order":1,"c":..}
 ```
 
+## Fixed-point realisation: WDF lattice vs Direct-Form biquad (`wdf.py`)
+
+Both structures realise the *same* ideal response, but they behave very differently under
+**coefficient quantisation** (fixed point on an MCU/FPGA). `wdf.py` implements both and
+compares them:
+
+- **WDF / one-multiplier lattice** — stores the pole `c` directly as its single
+  coefficient. Structurally lossless: for any quantised `c` (|c|<1) the section stays
+  *exactly* all-pass and the pole just shifts one quantisation step.
+  ```
+  e[n] = x[n] + c·e[n−1];   y[n] = −c·e[n] + e[n−1]
+  ```
+- **Direct-Form II biquad** — stores `a1 = −(c1+c2)`, `a2 = c1·c2`. Near the unit circle
+  (low-frequency sections) the map (a1,a2)→poles is ill-conditioned; a small error in `a2`
+  can even flip the discriminant and turn two real poles into a complex pair. `a1` also
+  needs an extra integer bit (|a1|<2), costing one fractional bit at equal word length.
+
+Worst-case image rejection (IRR) across the band, 90°, N=6, 270–3600 Hz, Fs=22050:
+
+| word length | WDF lattice | Direct-Form biquad |
+|-------------|-------------|--------------------|
+| float       | 92.6 dB     | 92.6 dB            |
+| Q12         | **80.3 dB** | 35.3 dB            |
+| Q10         | **39.8 dB** | 24.4 dB            |
+| Q8          | **37.2 dB** | 22.7 dB            |
+| Q6          | **27.8 dB** | 9.7 dB             |
+
+![WDF vs biquad](wdf_vs_biquad.png)
+
+The biquad degrades fastest at the **low-frequency band edge**, where its poles sit closest
+to `z=1` — exactly the direct-form weak spot. Use the WDF lattice for fixed-point targets.
+
+```python
+import wdf
+wdf.compare(d)                                   # table above
+wdf.plot_compare(d, bits=8, save_prefix="cmp")   # IRR / error vs frequency
+y = wdf.filter_leg(x, dp.biquads(d)[0], "wdf")   # actually filter a signal
+```
+
 ## Two design modes
 
 The `method` argument selects **where** the bilinear conversion happens:
