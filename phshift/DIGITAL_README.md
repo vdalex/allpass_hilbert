@@ -320,3 +320,35 @@ the same section `H(z) = (z⁻¹ − c)/(1 − c·z⁻¹)`.
 import phase_rotator as pr
 y, c = pr.phase_rotator(audio, f0=340, fs=8000, n_sections=8)
 ```
+
+## Complex (asymmetric) polyphase image-reject filter (`polyphase_complex.py`)
+
+The digital counterpart of the **Gingell / Behbahani RC polyphase network**. A real
+filter cannot tell +f from −f (`|H(−f)| = |H(+f)|`). Combining the two real all-pass legs
+into a single **complex** filter breaks that symmetry:
+
+```
+C(z) = A0(z) + j·A1(z)          (A0, A1 = the two all-pass legs)
+```
+
+Across the design band it adds constructively for +f and cancels for −f, so `|C(f)|` is
+**asymmetric about DC** — a passband on +f and a deep notch on the mirror −f. Applied to a
+real signal it outputs the analytic (one-sided) signal; the residual −f leakage is the
+image, suppressed by exactly the design IRR. This is the same image rejection as the phasing
+SSB mixer, **folded into one complex filter** (no separate quadrature mix) — the two are
+duals, and both use the same geometric-symmetric corner placement (the RC values of a
+multistage RC polyphase filter).
+
+![Complex polyphase image-reject filter](polyphase_complex.png)
+
+(a) asymmetric `|C(f)|` — passes +f, notches −f; (b) image rejection vs. frequency per N;
+(c) a real multi-tone through `C(z)` with the −f image suppressed; (d) worst-case rejection
+vs. section count (≈22 dB/section: 39/61/83/105 dB for N=2/3/4/6). In hardware the ceiling is
+set by R/C mismatch (~40–60 dB); in fixed point, by coefficient quantisation — use the WDF
+lattice (`wdf.py`).
+
+```python
+import polyphase_complex as pc
+d = dp.design(90, 4, 300, 3400, 48000, method="digital")
+yc = pc.leg_filter(x, d["c"][:, 0]) + 1j * pc.leg_filter(x, d["c"][:, 1])  # analytic out
+```
