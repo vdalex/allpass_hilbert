@@ -352,3 +352,37 @@ import polyphase_complex as pc
 d = dp.design(90, 4, 300, 3400, 48000, method="digital")
 yc = pc.leg_filter(x, d["c"][:, 0]) + 1j * pc.leg_filter(x, d["c"][:, 1])  # analytic out
 ```
+
+## Image-reject downconverter — receive side (`image_reject_rx.py`)
+
+The receive dual of the phasing exciter. A real RF signal at `f_LO ± f_IF` is downconverted
+while the image is rejected, two ways:
+
+- **Hartley** — quadrature mixer + the all-pass 90° network. The wanted (upper) and image
+  (lower) both land at audio `f_IF` with opposite Q sign; the two all-pass legs plus a sum
+  cancel the image and keep the wanted:
+  `out = A0{I} + A1{Q}`. Image rejection **equals the all-pass IRR** — the same figure as the
+  transmitter. This is the on-theme, all-pass-based receiver.
+- **Weaver ("third method")** — two quadrature mixing stages + low-pass filters, **no**
+  broadband 90° network. The 2nd quadrature mix moves wanted and image to `W ∓ f_IF`; the
+  final LPF keeps the wanted and drops the image.
+
+![Image-reject downconverters](image_reject_rx.png)
+
+(a) RF input (wanted + image around `f_LO`); (b) Hartley audio output — wanted tones kept,
+image tones rejected (~85 dB at N=4); (c) rejection vs IF — **Hartley tracks the all-pass IRR**
+(worst 77.7 dB, theory 83.5), **Weaver is much higher** (~120–175 dB); (d) Weaver output.
+
+> **Read the comparison honestly.** Weaver looks far better here only because this is *ideal
+> digital*: perfect quadrature oscillators and matched LPFs, so its rejection is limited only
+> by the LPF stopband. In real hardware Weaver is limited by **oscillator/LPF matching** and
+> has a **secondary image** (an interferer at `2·f_LO2` offset that the first LPF must remove);
+> Hartley is limited by the all-pass phase accuracy (and mixer balance). The all-pass Hartley
+> needs one precise wideband 90° network; Weaver trades that for a second mixer, a second
+> quadrature LO and two matched LPFs. Both are used in practice.
+
+```python
+import image_reject_rx as rx
+d = dp.design(90, 4, 300, 3400, 48000, method="digital")
+audio = rx.hartley_rx(x_rf, f_lo=10000, fs=48000, c=d["c"], fcut=3800)
+```
