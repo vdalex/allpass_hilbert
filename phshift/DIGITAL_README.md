@@ -287,3 +287,36 @@ import ssb_phasing as ssb
 # see ssb_phasing.main(); core call:
 usb = ssb.ssb_modulate(audio, c, fc=9000, fs=48000, sideband="USB")
 ```
+
+## Audio phase rotator / asymmetry eliminator (`phase_rotator.py`)
+
+A different use of the all-pass section — not a 90° splitter but a **speech phase
+rotator** (Kahn *Symmetra-Peak*; e.g. the CZH-labs / Audiowind **MD-A110** board: an
+8-pole "lead" all-pass with its pole near 340 Hz).
+
+Speech is strongly **asymmetric** — positive and negative excursions differ, giving a high
+crest factor so one polarity clips first. A cascade of first-order all-pass sections leaves
+the **magnitude spectrum untouched** (it is all-pass) but scrambles the phase, which
+**redistributes the peaks about the zero axis**. The waveform becomes symmetric and its
+crest factor drops, so a following transmitter clipper/limiter yields more average (talk)
+power for the same peak deviation with less audible distortion — hence phase rotators appear
+in most broadcast/SSB/AM/NBFM speech processors.
+
+![Audio phase rotator](phase_rotator.png)
+
+Example (8 sections @ 340 Hz, Fs=8 kHz, synthetic voiced speech):
+
+| metric | input | rotated |
+|--------|-------|---------|
+| asymmetry +peak/−peak | 11.4 | **2.4** |
+| crest factor | 15.4 dB | **11.2 dB** |
+| RMS | 1.358 | 1.358 (unchanged — all-pass) |
+
+→ ~4.3 dB peak reduction, i.e. ~4.3 dB more average power after clipping. This is a *single*
+all-pass cascade (one leg), unlike the two-leg 90° splitter of `ssb_phasing.py`, but uses
+the same section `H(z) = (z⁻¹ − c)/(1 − c·z⁻¹)`.
+
+```python
+import phase_rotator as pr
+y, c = pr.phase_rotator(audio, f0=340, fs=8000, n_sections=8)
+```
