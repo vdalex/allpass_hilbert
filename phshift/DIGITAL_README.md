@@ -260,15 +260,27 @@ suppression is set **entirely by the splitter's phase error** — it equals the 
 suppression(f) = −20·log10|tan(ε(f)/2)|
 ```
 
-`ssb_phasing.py` designs the splitter from an IRR spec (300–3000 Hz comms audio,
-target 50 dB → N=3 sections/leg → ~63 dB), feeds a coherent multi-tone, up-converts to a
-low IF, and reads the wanted vs. image lines straight off one FFT. The measured suppression
-lands exactly on the theoretical IRR curve:
+`ssb_phasing.py` designs the splitter (300–3000 Hz comms audio), feeds a coherent
+multi-tone, up-converts to a low IF, and reads the wanted vs. image lines straight off one
+FFT. It **compares several section counts** — more all-pass sections push the image deeper,
+~22 dB per section:
 
-![Phasing SSB suppression](ssb_phasing.png)
+| sections/leg N | all-pass stages 2N | worst-case suppression |
+|----------------|--------------------|------------------------|
+| 2 | 4  | 40 dB |
+| 3 | 6  | 64 dB |
+| 4 | 8  | 87 dB |
+| 6 | 12 | 107 dB |
+| 8 | 16 | 113 dB* |
 
-Top: the USB tones sit ~65 dB above the suppressed LSB image (and the carrier is nulled by
-the quadrature balance). Bottom: measured suppression (dots) vs. theoretical equiripple IRR.
+<sub>*N=8 hits the double-precision measurement floor (~112 dB); the true design phase error is even smaller.</sub>
+
+![Phasing SSB suppression vs. section count](ssb_phasing.png)
+
+Top: the suppressed image (LSB) tones drop deeper with each added section. Bottom: the
+measured suppression (dots) lands exactly on the theoretical equiripple IRR (lines), one
+curve per N. The measured worst-case matches theory to a fraction of a dB, confirming that
+for all-pass legs the sideband rejection is set purely by the phase error.
 
 ```python
 import ssb_phasing as ssb
