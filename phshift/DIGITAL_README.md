@@ -3,6 +3,10 @@
 Python port of the analog `phshift.m` methodology, producing coefficients for a
 **digital** all-pass phase-shift network (Hilbert / 90° phase splitter).
 
+> Application: [`ssb_phasing.py`](ssb_phasing.py) uses the splitter to build a
+> phasing-method (Hartley) SSB exciter and measures the unwanted-sideband
+> suppression end-to-end — see [Application: SSB generation](#application-ssb-generation-ssb_phasingpy).
+
 ## Methodology
 
 Identical optimisation to the MATLAB original:
@@ -237,3 +241,37 @@ Max phase error ≈ **0.03°** across the band. Coefficients `c` for each sectio
 |----------|---------|---------|---------|----------|
 | 1 (I)    | 0.93645 | 0.79827 | 0.49666 | −0.36323 |
 | 2 (Q)    | 0.98006 | 0.87962 | 0.67794 | 0.20715  |
+
+## Application: SSB generation (`ssb_phasing.py`)
+
+The 90° splitter is the heart of a **phasing-method (Hartley) SSB exciter** — the
+classic no-crystal-filter architecture of an HF transceiver. Audio is split into two
+all-pass legs 90° apart, then quadrature-up-converted:
+
+```
+USB:  s[n] = I[n]·cos(ωc n) − Q[n]·sin(ωc n)      (wanted at fc + f_audio)
+LSB:  s[n] = I[n]·cos(ωc n) + Q[n]·sin(ωc n)      (wanted at fc − f_audio)
+```
+
+Because both legs are all-pass (perfect amplitude balance), the unwanted-sideband
+suppression is set **entirely by the splitter's phase error** — it equals the design IRR:
+
+```
+suppression(f) = −20·log10|tan(ε(f)/2)|
+```
+
+`ssb_phasing.py` designs the splitter from an IRR spec (300–3000 Hz comms audio,
+target 50 dB → N=3 sections/leg → ~63 dB), feeds a coherent multi-tone, up-converts to a
+low IF, and reads the wanted vs. image lines straight off one FFT. The measured suppression
+lands exactly on the theoretical IRR curve:
+
+![Phasing SSB suppression](ssb_phasing.png)
+
+Top: the USB tones sit ~65 dB above the suppressed LSB image (and the carrier is nulled by
+the quadrature balance). Bottom: measured suppression (dots) vs. theoretical equiripple IRR.
+
+```python
+import ssb_phasing as ssb
+# see ssb_phasing.main(); core call:
+usb = ssb.ssb_modulate(audio, c, fc=9000, fs=48000, sideband="USB")
+```
