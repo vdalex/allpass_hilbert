@@ -425,3 +425,34 @@ y, w = iq.blind_lms(r)                                  # correct
 > This models **frequency-flat** imbalance (one complex weight). Analog branches whose
 > frequency responses differ give **frequency-dependent** imbalance — correct that with a
 > widely-linear **FIR** LMS (`y = r + Σ_k w_k·conj(r[n−k])`), the natural next step.
+
+## Frequency-dependent imbalance + WL-FIR LMS (`iq_fd_imbalance_wlfir.py`)
+
+When the I and Q analog branches have **different frequency responses** (mismatched filters,
+a small delay skew), the gain/phase error — and hence the image rejection — **varies across
+the band**. A single complex weight can only set one gain/phase, so it nulls the image at one
+frequency and leaves the slope. The fix is a **widely-linear FIR** on the conjugate branch:
+
+```
+y[n] = r[n] + Σ_{k} w_k · conj(r[n-k])
+w_k ← w_k − μ · y[n] · y[n-k]        (blind: nulls the output pseudo-autocorrelation)
+```
+
+The regressor is the past **output** `y[n-k]`; `E[y[n]·y[n-k]]` is zero for a *proper* signal
+at every lag, so the corrected wanted is a fixed point and is left untouched whatever its
+spectral colour — only the improper (image) part is removed (circularity restoration,
+Anttila/Valkama). A small step is needed (µ≈0.003, like the single-tap case).
+
+![Frequency-dependent imbalance + WL-FIR](iq_fd_imbalance_wlfir.png)
+
+Model: 0.5 dB, 2°, 0.06-sample branch skew over 2–20 kHz. (a) **before** is sloped 31→24 dB;
+**1-tap** nulls at one frequency (~60 dB) but sags to ~29 dB at the edges; **WL-FIR (K=11)**
+holds ~40–50 dB across the band. (b) the image band is cleared; (c) learning curves; (d) the
+11 taps carry real spread — a genuine filter, not one weight. Worst-in-band **23.5 → 29.0
+(1-tap) → 37.2 dB (WL-FIR)**; more taps / smaller µ / longer data go deeper.
+
+```python
+import iq_fd_imbalance_wlfir as fd
+r = fd.apply_fd_imbalance(s, gain_db=0.5, phase_deg=2.0, delay_samp=0.06)
+y, w = fd.wl_fir_lms(r, K=11, mu=0.003)
+```
