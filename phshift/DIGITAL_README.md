@@ -386,3 +386,42 @@ import image_reject_rx as rx
 d = dp.design(90, 4, 300, 3400, 48000, method="digital")
 audio = rx.hartley_rx(x_rf, f_lo=10000, fs=48000, c=d["c"], fcut=3800)
 ```
+
+## I/Q branch imbalance + blind LMS correction (`iq_imbalance_lms.py`)
+
+On paper the all-pass chains reach 80–110 dB image rejection; in hardware the floor is set
+by **gain/phase mismatch between the I and Q branches** (mixers, ADCs, filters). With
+amplitude ratio `g` and phase error `φ` the observed complex baseband mixes the wanted
+signal with its conjugate:
+
+```
+r[n] = μ·s[n] + ν·s*[n],   μ=(1+g·e^{+jφ})/2,  ν=(1−g·e^{−jφ})/2,   IRR = |μ/ν|²
+```
+
+e.g. **1 dB + 5° → only ~23 dB**, no matter how good the filter. A wanted signal is *proper*
+(`E[s²]=0`), so imbalance is detectable as `E[r²]≠0`. The blind widely-linear corrector
+
+```
+y[n] = r[n] + w·conj(r[n]);   w ← w − μ_lms·y[n]²   (drives E[y²]→0)
+```
+
+converges to `w = −E[r²]/(2·E[|r|²])` and cancels the conjugate (image) term — no training
+signal needed (the standard Valkama/Anttila blind compensator; complements pilot/Havens-style
+balancing).
+
+![I/Q imbalance + LMS](iq_imbalance_lms.png)
+
+(a) the −f image drops from −23 dB to ~−57 dB; (b) LMS learning curve; (c) rejection vs phase
+imbalance — **before** follows the imbalance floor, **after** is flat ~57 dB regardless; (d)
+the weight `w` converges to the analytic optimum in ~25 ms. Restored **22.8 → 56.7 dB** for
+1 dB / 5°.
+
+```python
+import iq_imbalance_lms as iq
+r = iq.apply_imbalance(s, gain_db=1.0, phase_deg=5.0)   # model
+y, w = iq.blind_lms(r)                                  # correct
+```
+
+> This models **frequency-flat** imbalance (one complex weight). Analog branches whose
+> frequency responses differ give **frequency-dependent** imbalance — correct that with a
+> widely-linear **FIR** LMS (`y = r + Σ_k w_k·conj(r[n−k])`), the natural next step.
